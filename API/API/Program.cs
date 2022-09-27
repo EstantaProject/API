@@ -6,6 +6,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<PasetoProvider>();
+builder.Services.AddAuthorization(opts => {
+ 
+});
 
 var app = builder.Build();
 

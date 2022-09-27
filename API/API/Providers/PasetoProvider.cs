@@ -1,9 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using API.Database;
-using Microsoft.IdentityModel.Tokens;
+﻿using API.Database;
 using Paseto;
 using Paseto.Builder;
 using Paseto.Cryptography.Key;
@@ -14,7 +9,7 @@ public class PasetoProvider
 {
     public string GenerateAccessToken(User userModel, PasetoSymmetricKey pasetoSymmetricKey)
     {
-        var token = new PasetoBuilder().Use("v1", Purpose.Local)
+        var token = new PasetoBuilder().Use(ProtocolVersion.V4, Purpose.Local)
             .WithKey(pasetoSymmetricKey)
             .AddClaim("id", userModel.Id.ToString())
             .AddClaim("username", userModel.UserName)

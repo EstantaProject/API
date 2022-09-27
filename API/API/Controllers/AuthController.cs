@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Paseto;
 using Paseto.Builder;
+
 using BC = BCrypt.Net.BCrypt;
 
 namespace API.Controllers;
@@ -19,7 +20,7 @@ public class AuthController : Controller
     {
         _pasetoProvider = pasetoProvider;
     }
-    
+
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login(LoginModel model)
@@ -42,7 +43,7 @@ public class AuthController : Controller
             db.Sessions.RemoveRange(existingSessions);
 
             var key = new PasetoBuilder()
-                .Use("v1", Purpose.Local)
+                .Use(ProtocolVersion.V4, Purpose.Local)
                 .GenerateSymmetricKey();
 
             var newSession = new Session
@@ -54,7 +55,7 @@ public class AuthController : Controller
             };
             await db.Sessions.AddAsync(newSession);
             await db.SaveChangesAsync();
-            
+
             return Ok(_pasetoProvider.GenerateAccessToken(user, key));
         }
     }
@@ -64,7 +65,7 @@ public class AuthController : Controller
     public async Task<IActionResult> Register(RegisterModel model)
     {
         var hashedPassword = BC.HashPassword(model.Password);
-        
+
         var newUser = new User
         {
             UserName = model.Username,
@@ -76,7 +77,7 @@ public class AuthController : Controller
             db.Users.Add(newUser);
             await db.SaveChangesAsync();
         }
-        
+
         return Ok();
     }
 }
